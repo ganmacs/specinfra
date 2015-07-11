@@ -33,6 +33,10 @@ module Specinfra
         scp_upload!(from, to)
       end
 
+      def recieve_file(from, to)
+        scp_download!(from, to)
+      end
+
       def send_directory(from, to)
         scp_upload!(from, to, :recursive => true)
       end
@@ -97,6 +101,15 @@ module Specinfra
         scp = get_config(:scp)
         scp.upload!(from, tmp, opt)
         run_command(command.get(:move_file, tmp, to))
+      end
+
+      def scp_download!(from, to, opt={})
+        if get_config(:scp).nil?
+          set_config(:scp, create_scp)
+        end
+
+        scp = get_config(:scp)
+        scp.download!(from, to, opt)
       end
 
       def ssh_exec!(command)
